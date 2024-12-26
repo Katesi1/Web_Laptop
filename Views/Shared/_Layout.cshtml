@@ -28,12 +28,27 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Laptops" asp-action="Index">Laptop</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Register">Register</a>
-                        </li>
+                        <!-- Nếu người dùng chưa đăng nhập, hiển thị Login và Register -->
+                        @if (string.IsNullOrEmpty(ViewData["UserName"] as string))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Register">Register</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- Nếu người dùng đã đăng nhập, hiển thị UserName và Logout -->
+                            <li class="nav-item">
+                                <span class="nav-link text-dark">Hello, @ViewData["UserName"]</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+
                     </ul>
                 </div>
             </div>

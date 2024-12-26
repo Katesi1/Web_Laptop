@@ -12,7 +12,7 @@ namespace MvcLaptop.Data
         public MvcLaptopContext (DbContextOptions<MvcLaptopContext> options)
             : base(options)
         {
-            Users = null!;
+            Users = Users;
         }
 
         public DbSet<MvcLaptop.Models.Laptop> Laptop { get; set; } = default!;

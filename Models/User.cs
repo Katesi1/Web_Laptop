@@ -21,7 +21,7 @@ public class User
 
     public User() { }
 
-      public User(string userName, string password, string email)
+      public User(string userName, string password , string email)
     {
         UserName = userName;
         Password = password;
