@@ -6,7 +6,13 @@
 <div class="text-left">
     <h1 class="display-8">Computer Zone</h1>
 </div>
-<h1>@(ViewData["CurrentGenre"] ?? "All Products")</h1>
+<h2>@(ViewData["CurrentGenre"] ?? "All Products")</h2>
+<form asp-controller="Home" asp-action="Index" method="get">
+    <p>
+        <input type="text" name="searchString"  value="@ViewData["SearchString"]" placeholder="Tên máy" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
 <div class="product-grid">
 @foreach (var item in Model) {
     <a asp-action="Details" asp-route-id="@item.Id" class="product-card">
