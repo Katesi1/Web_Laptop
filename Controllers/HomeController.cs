@@ -14,17 +14,48 @@ public class HomeController : Controller
         _context = context;
         _logger = logger;
     }
-    public IActionResult Index()
+    public IActionResult Index(string genre)
     {
-        var laptops = _context.Laptop.ToList();
+        ViewData["Genres"] = _context.Laptop
+            .Select(l => l.Genre)
+            .Distinct()
+            .OrderBy(g => g)
+            .ToList();
+        // Lọc sản phẩm theo Genre
+        var laptops = string.IsNullOrEmpty(genre)
+            ? _context.Laptop.ToList() // Nếu không có genre, trả về tất cả sản phẩm
+            : _context.Laptop.Where(l => l.Genre == genre).ToList(); // Lọc theo genre
+
+        // Ghi lại Genre hiện tại (nếu có)
+        ViewData["CurrentGenre"] = genre;
         return View(laptops);
     }
+
 
     public IActionResult Privacy()
     {
         return View();
     }
+    public IActionResult Details(int id)
+    {
+        var laptop = _context.Laptop.FirstOrDefault(l => l.Id == id);
+        if (laptop == null)
+        {
+            return NotFound();
+        }
+        return View(laptop);
+    }
+     // Action trả về danh sách Genre
+    public IActionResult PartialGenres()
+    {
+        var genres = _context.Laptop
+            .Select(l => l.Genre)
+            .Distinct()
+            .OrderBy(g => g)
+            .ToList();
 
+        return PartialView("_GenreMenu", genres);
+    }
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
