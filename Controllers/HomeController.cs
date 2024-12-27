@@ -17,7 +17,7 @@ public class HomeController : Controller
         _context = context;
         _logger = logger;
     }
-    public IActionResult Index(string genre)
+    public async Task<IActionResult> Index(string genre,string searchString)
     {
         var userName = HttpContext.Session.GetString("UserName");
         ViewData["UserName"] = userName;
@@ -28,12 +28,16 @@ public class HomeController : Controller
             .ToList();
         // Lọc sản phẩm theo Genre
         var laptops = string.IsNullOrEmpty(genre)
-            ? _context.Laptop.ToList() // Nếu không có genre, trả về tất cả sản phẩm
-            : _context.Laptop.Where(l => l.Genre == genre).ToList(); // Lọc theo genre
-
+            ? _context.Laptop.AsQueryable() // Nếu không có genre, trả về tất cả sản phẩm
+            : _context.Laptop.Where(l => l.Genre == genre); // Lọc theo genre
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            laptops = laptops.Where(l => l.Title!.ToUpper().Contains(searchString.ToUpper()));
+        }
         // Ghi lại Genre hiện tại (nếu có)
         ViewData["CurrentGenre"] = genre;
-        return View(laptops);
+        ViewData["SearchString"] = searchString;
+        return View(await laptops.ToListAsync());
     }
 
 
