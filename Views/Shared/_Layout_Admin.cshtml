@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Dashboard - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        #layoutSidenav {
+            display: flex;
+            flex-direction: row; /* Đảm bảo sidebar và nội dung chính nằm ngang hàng */
+            height: 100vh; /* Chiều cao toàn bộ màn hình */
+        }
+
+        #layoutSidenav_nav {
+            width: 250px; /* Đặt chiều rộng cố định cho menu */
+        }
+
+        #layoutSidenav_content {   
+            padding: 20px; /* Khoảng cách nội dung */
+        }
+        footer {
+            position: relative; /* Ghim footer xuống dưới cùng */
+            padding: 10px 0 ;
+            white-space: nowrap;
+            width: 100%; /* Đảm bảo footer chiếm toàn bộ chiều rộng */
+            background-color: #f8f9fa; /* Màu nền footer */
+            bottom: -18px;
+            left: 20px;
+        }
+    </style>
+</head>
+
+<body class="sb-nav-fixed">
+    <!-- Top Navbar -->
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand ps-3" asp-area="" asp-controller="Home" asp-action="Index" >Computer Zone</a>
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0 ">
+            @* <div class="input-group">
+                <input class="form-control" type="text" name="searchString"  value="@ViewData["SearchString"]" placeholder="Tên máy" />
+                <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+            </div>   *@
+        </form>
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4 ">
+            <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Hello, @ViewData["UserName"]
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="#">@ViewData["UserName"]</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a></li>
+                        </ul>
+                    </li>
+        </ul>
+    </nav>
+
+    <!-- Main Layout -->
+    <div id="layoutSidenav" class="d-flex">
+        <!-- Sidebar -->
+        <div id="layoutSidenav_nav" class="sidenav">
+            @(await Component.InvokeAsync("Sidebar"))
+        </div>
+
+        <!-- Main Content -->
+        <div id="layoutSidenav_content" style="position: relative; bottom: 20px;">
+            <main class="container-fluid px-4" class="flex-grow-1">
+                @RenderBody()
+            </main>
+                @(await Component.InvokeAsync("Footer"))
+        </div>
+    </div>
+
+    @* @(await Component.InvokeAsync("Footer")) *@
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/scripts.js"></script>
+    <script>
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        const layoutSidenavNav = document.getElementById("layoutSidenav_nav");
+        const layoutSidenavContent = document.getElementById("layoutSidenav_content");
+
+        sidebarToggle.addEventListener("click", () => {
+            layoutSidenavNav.classList.toggle("collapsed");
+            layoutSidenavContent.classList.toggle("expanded");
+        });
+
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

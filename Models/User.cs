@@ -19,9 +19,11 @@ public class User
     [EmailAddress]  // Đảm bảo rằng giá trị là một email hợp lệ
     public string Email { get; set; }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public User() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
-      public User(string userName, string password , string email)
+    public User(string userName, string password , string email)
     {
         UserName = userName;
         Password = password;

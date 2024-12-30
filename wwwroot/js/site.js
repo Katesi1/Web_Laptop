@@ -1,4 +1,86 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function decreaseQuantity(productId) {
+    const input = document.getElementById(`quantity-${productId}`); // Sử dụng id để tìm input
+    let quantity = parseInt(input.value); // Lấy giá trị của input
+    if (quantity > 1) {
+        input.value = quantity - 1; // Giảm giá trị
+        updateQuantity(productId);
+    }
+}
 
-// Write your JavaScript code.
+function increaseQuantity(productId) {
+    const input = document.getElementById(`quantity-${productId}`); // Sử dụng id để tìm input
+    let quantity = parseInt(input.value); // Lấy giá trị của input
+    const maxQuantity = parseInt(input.max); // Lấy số lượng tối đa từ thuộc tính max
+    if (quantity < maxQuantity) {
+        input.value = quantity + 1; // Tăng giá trị
+        updateQuantity(productId); // Cập nhật số lượng cho AJAX
+    }
+}
+function updateTotal(productId, price) {
+    const input = document.getElementById(`quantity-${productId}`);
+    const quantity = parseInt(input.value);
+    const total = quantity * price;  // Tính tổng giá
+    document.getElementById(`total-${productId}`).innerText = "$" + total.toFixed(2); // Cập nhật tổng giá vào table
+}
+function updateQuantity(productId) {
+    let input = document.getElementById(`quantity-${productId}`);
+    let quantity = input.value;
+
+    // Gửi yêu cầu cập nhật số lượng qua AJAX
+    fetch(`http://localhost:5187/Cart/UpdateQuantity?id=${productId}&quantity=${quantity}`, {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log("Giỏ hàng đã được cập nhật.");
+        }
+    })
+    .catch(error => {
+        console.error("Có lỗi xảy ra khi cập nhật giỏ hàng:", error);
+    });
+}
+// Hàm để lấy số lượng giỏ hàng từ backend và cập nhật UI
+function updateCartCount() {
+    $.ajax({
+        url: '/Cart/GetCartItemCount',  // URL của action trong controller
+        type: 'GET',
+        success: function(data) {
+            // Cập nhật số lượng giỏ hàng trong span
+            $('.js-cart-count').text(data.totalQuantity);  // Cập nhật số lượng giỏ hàng
+        },
+        error: function(error) {
+            console.error('Có lỗi xảy ra khi lấy số lượng giỏ hàng:', error);
+        }
+    });
+}
+// Gọi hàm updateCartCount sau khi thay đổi giỏ hàng (thêm sản phẩm, xóa sản phẩm, cập nhật số lượng)
+updateCartCount();  // Gọi hàm khi trang được tải
+// Khi thêm sản phẩm vào giỏ hàng
+function addToCart(productId, quantity) {
+    $.ajax({
+        url: '/Cart/AddToCart',  // Thay đổi URL tương ứng với hành động trong controller
+        type: 'POST',
+        data: { id: productId, quantity: quantity },
+        success: function() {
+            updateCartCount();  // Cập nhật số lượng sau khi thêm sản phẩm
+        },
+        error: function(error) {
+            console.error('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng:', error);
+        }
+    });
+}
+// Khi xóa sản phẩm khỏi giỏ hàng
+function removeFromCart(productId) {
+    $.ajax({
+        url: '/Cart/RemoveFromCart',  // Thay đổi URL tương ứng với hành động trong controller
+        type: 'POST',
+        data: { id: productId },
+        success: function() {
+            updateCartCount();  // Cập nhật số lượng sau khi xóa sản phẩm
+        },
+        error: function(error) {
+            console.error('Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng:', error);
+        }
+    });
+}
